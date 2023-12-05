@@ -10,8 +10,15 @@ def getOneColumnRates(res_list: List[CFR], pick_up: datetime.date, days: int, se
     drop_off = pick_up + datetime.timedelta(days)
     time = formatTime()
     __url = url.format(formatDate(pick_up, 1), time, formatDate(drop_off, 1), time)
-    __response = session.get(url=__url)
-    print(f"{__url[:60]}.. Status code: ", __response.status_code, "..")
+    try:
+        __response = session.get(url=__url)
+        print(f"{__url[:60]}.. Status code: ", __response.status_code, "..")
+    except requests.exceptions.Timeout:
+        print("Timeout error!")
+    except requests.exceptions.HTTPError as err:
+        print(f"HTTP error: {err.response.status_code}")
+    except requests.exceptions.RequestException:
+        print("Bad request")
     if __response.status_code >= 400:
         return None
     soup = BeautifulSoup(__response.text, 'lxml')

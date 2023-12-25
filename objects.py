@@ -43,3 +43,11 @@ class CFR(CarForRent):
     engine: str = ""
     company: str = ""
     different_millages: bool = False
+
+@dataclass
+class Company:
+    name: str = ""
+    www: str = ""
+    api_url: str = ""
+    dateformat: int = 0 ### 1 => %d-%m-%Y, 2 => %Y-%m-%d, 3 => %d.%m.%Y
+    loop: bool = True ### if loop == True => doing WEB requests for each rental period in RATES else doing one time cos data is presented as a TABLE on a company's WEB page

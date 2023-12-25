@@ -1,3 +1,6 @@
+from objects import Company
+from typing import List
+
 RATES = [1, 3, 7, 14, 21, 30]
 DAYS = [2, 6, 30]
 
@@ -20,3 +23,27 @@ ALMAK_KATALOG_PREFIX = "https://avto-prokat.spb.ru"
 # STORLET CARS CONFIGS (https://storletcar.com/)
 STORLET_URL_SPB = "https://storletcar.com/ru/spb/cars?utf8=%E2%9C%93&region=5639be176672693344000000&delivery=5639be1b6672693344fa0000&return=5639be1b6672693344fa0000&start_date={}&start_time={}&end_date={}&end_time={}"
 STORLET_URL_MSK = "https://storletcar.com/ru/msk/cars?utf8=%E2%9C%93&region=5639be196672693344450000&delivery=566ff35b6672697143960000&return=566ff35b6672697143960000&start_date={}&start_time={}&end_date={}&end_time={}"
+
+
+""" SET UP COMPANIES TO PARSE """
+COMPANIES: List[Company] = []
+
+COMPANIES.append(Company(name='RENT-MOTORS', www='https://rentmotors.ru/',
+                         api_url='https://rentmotors.ru/api/cars?start_station=10&end_station=10&start_date={}+{}&end_date={}+{}&age=1&sourceid=0',
+                         dateformat=2, loop=True))
+
+COMPANIES.append(Company(name='REX-RENT', www='https://www.rexrent.ru/',
+                         api_url='https://www.rexrent.ru/reservation/?takePointLabel=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3+%D0%90%D1%8D%D1%80%D0%BE%D0%BF%D0%BE%D1%80%D1%82+%D0%9F%D1%83%D0%BB%D0%BA%D0%BE%D0%B2%D0%BE&takePoint=LED%2C%2C&takePointInfo=%7B%22ID%22%3A%2237%22%2C%22name%22%3A%22%5Cu0410%5Cu044d%5Cu0440%5Cu043e%5Cu043f%5Cu043e%5Cu0440%5Cu0442+%5Cu041f%5Cu0443%5Cu043b%5Cu043a%5Cu043e%5Cu0432%5Cu043e%22%2C%22phone%22%3A%22%5C%22%2B7+921+315+16+31%5Cn%2B7+800+250+12+13+%28%5Cu0431%5Cu0435%5Cu0441%5Cu043f%5Cu043b%5Cu0430%5Cu0442%5Cu043d%5Cu044b%5Cu0439+%5Cu0432%5Cu044b%5Cu0437%5Cu043e%5Cu0432%29%5C%22%22%2C%22hours%22%3A%22%5Cu041f%5Cu041d-%5Cu0412%5Cu0421%3A+09%3A00-21%3A00%22%2C%22city%22%3A%22%5Cu0421%5Cu0430%5Cu043d%5Cu043a%5Cu0442-%5Cu041f%5Cu0435%5Cu0442%5Cu0435%5Cu0440%5Cu0431%5Cu0443%5Cu0440%5Cu0433%22%2C%22regione%22%3A%22%5Cu0421%5Cu0430%5Cu043d%5Cu043a%5Cu0442-%5Cu041f%5Cu0435%5Cu0442%5Cu0435%5Cu0440%5Cu0431%5Cu0443%5Cu0440%5Cu0433%22%2C%22address%22%3A%22%5Cu041f%5Cu0443%5Cu043b%5Cu043a%5Cu043e%5Cu0432%5Cu0441%5Cu043a%5Cu043e%5Cu0435+%5Cu0448.%2C+%5Cu0434.+41%2C+%5Cu043b%5Cu0438%5Cu0442.+3%5Cu0410%2C+2+%5Cu044d%5Cu0442%5Cu0430%5Cu0436%22%2C%22code%22%3A%22LED%22%2C%22is_airport%22%3A%221%22%2C%22latitude%22%3A%2259%2C7967%22%2C%22longitude%22%3A%2230%2C26943%22%2C%22zip%22%3A%22196210%22%2C%22location_name%22%3A%22PULKOVO+AIRPORT%22%2C%22address_one%22%3A%22International+Airport+Pulkovo%22%2C%22address_two%22%3A%22%22%2C%22city_en%22%3A%22St+Petersburg%22%2C%22region_en%22%3A%22St+Petersburg%22%2C%22phones%22%3A%5B%7B%22label%22%3A%22%5C%22%2B7+921+315+16+31%22%2C%22link%22%3A%22tel%3A%5C%2F%5C%2F%2B79213151631%22%7D%2C%7B%22label%22%3A%22%2B7+800+250+12+13+%28%5Cu0431%5Cu0435%5Cu0441%5Cu043f%5Cu043b%5Cu0430%5Cu0442%5Cu043d%5Cu044b%5Cu0439+%5Cu0432%5Cu044b%5Cu0437%5Cu043e%5Cu0432%29%5C%22%22%2C%22link%22%3A%22tel%3A%5C%2F%5C%2F%2B78002501213%22%7D%5D%2C%22time%22%3A%5B%22%5Cu041f%5Cu041d-%5Cu0412%5Cu0421%3A+09%3A00-21%3A00%22%5D%7D&takeDate={}&takeTime={}&returnPointLabel=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3+%D0%90%D1%8D%D1%80%D0%BE%D0%BF%D0%BE%D1%80%D1%82+%D0%9F%D1%83%D0%BB%D0%BA%D0%BE%D0%B2%D0%BE&returnPoint=LED%2C%2C&returnPointInfo=%7B%22ID%22%3A%2237%22%2C%22name%22%3A%22%5Cu0410%5Cu044d%5Cu0440%5Cu043e%5Cu043f%5Cu043e%5Cu0440%5Cu0442+%5Cu041f%5Cu0443%5Cu043b%5Cu043a%5Cu043e%5Cu0432%5Cu043e%22%2C%22phone%22%3A%22%5C%22%2B7+921+315+16+31%5Cn%2B7+800+250+12+13+%28%5Cu0431%5Cu0435%5Cu0441%5Cu043f%5Cu043b%5Cu0430%5Cu0442%5Cu043d%5Cu044b%5Cu0439+%5Cu0432%5Cu044b%5Cu0437%5Cu043e%5Cu0432%29%5C%22%22%2C%22hours%22%3A%22%5Cu041f%5Cu041d-%5Cu0412%5Cu0421%3A+09%3A00-21%3A00%22%2C%22city%22%3A%22%5Cu0421%5Cu0430%5Cu043d%5Cu043a%5Cu0442-%5Cu041f%5Cu0435%5Cu0442%5Cu0435%5Cu0440%5Cu0431%5Cu0443%5Cu0440%5Cu0433%22%2C%22regione%22%3A%22%5Cu0421%5Cu0430%5Cu043d%5Cu043a%5Cu0442-%5Cu041f%5Cu0435%5Cu0442%5Cu0435%5Cu0440%5Cu0431%5Cu0443%5Cu0440%5Cu0433%22%2C%22address%22%3A%22%5Cu041f%5Cu0443%5Cu043b%5Cu043a%5Cu043e%5Cu0432%5Cu0441%5Cu043a%5Cu043e%5Cu0435+%5Cu0448.%2C+%5Cu0434.+41%2C+%5Cu043b%5Cu0438%5Cu0442.+3%5Cu0410%2C+2+%5Cu044d%5Cu0442%5Cu0430%5Cu0436%22%2C%22code%22%3A%22LED%22%2C%22is_airport%22%3A%221%22%2C%22latitude%22%3A%2259%2C7967%22%2C%22longitude%22%3A%2230%2C26943%22%2C%22zip%22%3A%22196210%22%2C%22location_name%22%3A%22PULKOVO+AIRPORT%22%2C%22address_one%22%3A%22International+Airport+Pulkovo%22%2C%22address_two%22%3A%22%22%2C%22city_en%22%3A%22St+Petersburg%22%2C%22region_en%22%3A%22St+Petersburg%22%2C%22phones%22%3A%5B%7B%22label%22%3A%22%5C%22%2B7+921+315+16+31%22%2C%22link%22%3A%22tel%3A%5C%2F%5C%2F%2B79213151631%22%7D%2C%7B%22label%22%3A%22%2B7+800+250+12+13+%28%5Cu0431%5Cu0435%5Cu0441%5Cu043f%5Cu043b%5Cu0430%5Cu0442%5Cu043d%5Cu044b%5Cu0439+%5Cu0432%5Cu044b%5Cu0437%5Cu043e%5Cu0432%29%5C%22%22%2C%22link%22%3A%22tel%3A%5C%2F%5C%2F%2B78002501213%22%7D%5D%2C%22time%22%3A%5B%22%5Cu041f%5Cu041d-%5Cu0412%5Cu0421%3A+09%3A00-21%3A00%22%5D%7D&returnDate={}&returnTime={}&partners=&partner_code=&autoId=',
+                         dateformat=3, loop=True))
+
+COMPANIES.append(Company(name='A-ARENDA', www='www.rentcars.ru',
+                         api_url='https://www.rentcars.ru/index.php?mact=aa_mod_tariff,cntnt01,cli_rs_tariff_list,0&cntnt01dtb={}&cntnt01dte={}&cntnt01class_ids=&cntnt01returnid=38&showtemplate=false',
+                         dateformat=2, loop=True))
+
+COMPANIES.append(Company(name='ALMAK-PROKAT', www='https://avto-prokat.spb.ru/',
+                         api_url='https://avto-prokat.spb.ru/tarify/',
+                         dateformat=2, loop=False))
+
+COMPANIES.append(Company(name='STORLET', www='https://storletcar.com/',
+                         api_url='https://storletcar.com/ru/spb/cars?utf8=%E2%9C%93&region=5639be176672693344000000&delivery=5639be1b6672693344fa0000&return=5639be1b6672693344fa0000&start_date={}&start_time={}&end_date={}&end_time={}',
+                         dateformat=1, loop=True))

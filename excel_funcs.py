@@ -8,14 +8,19 @@ def SaveExcel(wb: Workbook, add_time: bool):
     if not add_time:
         wb.save(f"outputs/Competitors-rates-{datetime.datetime.today().strftime('%d-%m-%Y')}.xlsx")
     else:
-        wb.save(f"outputs/Competitors-rates-{datetime.datetime.today().strftime('%d-%m-%Y-%H_%M')}.xlsx")
+        wb.save(f"outputs/Competitors-rates-{datetime.datetime.today().strftime('%d-%m-%Y-%H_%M_%S')}.xlsx")
 
 def AddRates(company: str, wb: Workbook, data: List[CFR]) -> Workbook:
-    if data == None:
-        return None
+    if data == None or len(data) == 0:
+        err_str = f"No cars in {company} company :("
+        print(err_str)
+        ws = wb.create_sheet(f"{company}-{datetime.datetime.today().strftime('%d-%m-%y')}")
+        ws.cell(1, 1).value = err_str
+        return wb
     ws = wb.create_sheet(f"{company}-{datetime.datetime.today().strftime('%d-%m-%y')}")
     firstColumn = ['SIPP', 'CAR NAME', 'MILLAGE', 'DEPO', 'R1', 'R3', 'R7', 'R14', 'R21', 'R30']
     if not data[0].different_millages:
+        print(f"Implementing {len(data)} cars to EXCEL..")
         for i in range(0, len(firstColumn)):
             ws.cell(i+1, 1).value = firstColumn[i]
         for i in range(0, len(data)):
@@ -23,6 +28,7 @@ def AddRates(company: str, wb: Workbook, data: List[CFR]) -> Workbook:
             for j in range(0, len(arr)):
                 ws.cell(j+1, i+2).value = arr[j]
     else:
+        print(f"Implementing {len(data)//3} cars to EXCEL..")
         for i in range(0, len(firstColumn)):
             ws.cell(i+1, 1).value = firstColumn[i]
             ws.cell(i+12, 1).value = firstColumn[i]

@@ -1,3 +1,5 @@
+import asyncio
+import aiohttp
 import datetime
 from typing import List
 import random
@@ -29,7 +31,7 @@ def findCarByName(name: str, data: List[CFR]) -> int:
             return data.index(d)
     return -1
 
-def getAllRates(pick_up: datetime.date, session: requests.Session, f, *args, **kwargs) -> List[CFR]:
+async def getAllRates(pick_up: datetime.date, session: aiohttp.ClientSession, f, *args, **kwargs) -> List[CFR]:
     res_list: List[CFR] = []
     
     location = kwargs.get('location')
@@ -45,9 +47,9 @@ def getAllRates(pick_up: datetime.date, session: requests.Session, f, *args, **k
 
     if loop:
         for rate in RATES:
-            res_list = f(res_list, pick_up, rate, session, location=location)
+            res_list = await f(res_list, pick_up, rate, session, location=location)
         print("Found:", len(res_list), "cars..")
     else:
-        res_list = f(res_list, pick_up, 0, session, xtra=xtra)
+        res_list = await f(res_list, pick_up, 0, session, xtra=xtra)
         print("Found:", len(res_list)//3, "cars..")
     return res_list

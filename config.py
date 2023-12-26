@@ -2,7 +2,7 @@ from objects import Company
 from typing import List
 
 RATES = [1, 3, 7, 14, 21, 30]
-DAYS = [2, 6, 30]
+DAYS = [6]
 
 COMPANIES = ['RENT-MOTORS', 'REX-RENT', 'A-ARENDA', 'ALMAK-PROKAT', 'STORLET']
 # RENT MOTORS CONFIGS (https://rentmotors.ru/)

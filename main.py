@@ -12,8 +12,11 @@ from a_arenda_parser import getOneColumnRates as a_arenda_func
 from almak_parser import getOneColumnRates_almak as almak_func
 from storlet_car_parser import getOneColumnRates as storlet_func
 
-if __name__ == '__main__':
-    with requests.Session() as s:
+import asyncio
+import aiohttp
+
+async def main():
+    async with aiohttp.ClientSession() as s:
         
         for d in DAYS:
             print(f'>>> Rental start date after {d} days from taday..')
@@ -31,37 +34,40 @@ if __name__ == '__main__':
             # Rent Motors
             print("1. Rent Motors..")
             ws.cell(8, 1).value = "RENT MOTORS"
-            wb = AddRates("RENT-MOTORS", wb, getAllRates(pick_up, s, rent_motors_func, location=10))
+            wb = AddRates("RENT-MOTORS", wb, await getAllRates(pick_up, s, rent_motors_func, location=10))
             if wb == None:
                 print("Panic.. Rent Motors failed..")
 
             # Rex Rent
             print("2. Rex Rent..")
             ws.cell(9, 1).value = "REX RENT"
-            wb = AddRates("REX-RENT", wb, getAllRates(pick_up, s, rex_rent_func))
+            wb = AddRates("REX-RENT", wb, await getAllRates(pick_up, s, rex_rent_func))
             if wb == None:
                 print("Panic.. Rex Rent failed..")
 
             # A Arenda
             print("3. A Arenda..")
             ws.cell(10, 1).value = "A ARENDA"
-            wb = AddRates("A-ARENDA", wb, getAllRates(pick_up, s, a_arenda_func))
+            wb = AddRates("A-ARENDA", wb, await getAllRates(pick_up, s, a_arenda_func))
             if wb == None:
                 print("Panic.. A Arenda failed..")
 
             # Almak
             print("4. Almak..")
             ws.cell(11, 1).value = "ALMAK"
-            wb = AddRates("ALMAK", wb, getAllRates(pick_up, s, almak_func, loop=False))
+            wb = AddRates("ALMAK", wb, await getAllRates(pick_up, s, almak_func, loop=False, xtra=False))
             if wb == None:
                 print("Panic.. Almak failed..")
 
             # Storlet
             print("5. Storlet..")
             ws.cell(12, 1).value = "STORLET"
-            wb = AddRates("STORLET", wb, getAllRates(pick_up, s, storlet_func))
+            wb = AddRates("STORLET", wb, await getAllRates(pick_up, s, storlet_func))
+
+
             print("All done..")
 
-            SaveExcel(wb, add_time=True)
-        
-        s.close()
+            SaveExcel(wb, add_time=True) 
+
+if __name__ == '__main__':
+    asyncio.run(main())

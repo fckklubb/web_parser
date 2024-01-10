@@ -1,44 +1,37 @@
 import numpy as np
 import pandas as pd
 
-# folder = "./outputs/"
+from sources import rates_root, matches_root, data_folder
 
-# excel_file = "R:\PROJECTS\PYTHON\WEB_PARSER\outputs\Competitors-rates-06-12-2023-15_03.xlsx"
+def getRatesMatches():
+    __rates_file = pd.ExcelFile(rates_root)
+    __rates_sheets = __rates_file.sheet_names
+    __matches_file = pd.ExcelFile(matches_root)
+    
+    rates_new: pd.DataFrame
+    rates_old: pd.DataFrame
+    matches: pd.DataFrame
 
-# rates_file = "./rates.xlsx"
-# matches_file = "./matches_table.xlsx"
+    rates_new = pd.read_excel(__rates_file, "new", index_col=0, usecols=[0,1]+list(range(3, 18)), skiprows=lambda x: x not in [3]+list(range(6, 12))+list(range(17, 23)))
+    rates_old = pd.read_excel(__rates_file, "old", index_col=0, usecols=[0,1]+list(range(3, 18)), skiprows=lambda x: x not in [3]+list(range(6, 12))+list(range(17, 23)))
 
-# df = pd.read_excel(folder + "Competitors-rates-06-12-2023-15_03.xlsx", sheet_name=2)
+    matches = pd.read_excel(__matches_file, index_col=0)
 
-#print(df)
-#print(df.head(10))
-#print(df.describe())
+    return (rates_new, rates_old, matches)
 
-#rates_df_old = pd.read_excel(rates_file, "old")
-# rates_df_new = pd.read_excel(rates_file, "new")
+if __name__ == '__main__':
+    RN, RO, M = getRatesMatches()
+    # print(M)
 
-# rates_lim = rates_df_new.iloc[15:23,0:18]
-# print(rates_lim.head(30))
-# print(rates_lim.describe())
+    test_sipp = input('What car?\n')
 
-rates = ["r1", "r2", "r3"]
+    N_or_O = lambda x: RN if x == 'new' else RO
+    D = N_or_O(M.loc[test_sipp, 'park'])
+    s = D[
+            D[D.columns[0]]=='Lim'
+            ].loc[
+            'R3',
+            M.loc[test_sipp, 'inp_sipp']
+        ]
 
-df = pd.DataFrame(
-    {
-        "x": [2, 3, 4],
-        "y": [3, 1, 7]
-    },
-    index = rates
-)
-
-df["deviation"] = 100 * (1 - df["x"] / df["y"])
-
-print(df)
-
-arr = df["deviation"].to_numpy()
-
-print(arr)
-
-new_arr = np.where(arr>0, ">0", "<=0")
-
-print(new_arr)
+    print(s)

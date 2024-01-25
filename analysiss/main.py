@@ -1,7 +1,17 @@
 import numpy as np
 import pandas as pd
 
-from sources import rates_root, matches_root, data_folder
+from sources import rates_root, matches_root, data_folder, rate_names
+from config import park, sipp_names
+
+# from Levenshtein import ratio
+
+from funcs import *
+
+from collections import namedtuple
+
+T = namedtuple('T', 'sipp_names rate_names park')
+Trio = T(sipp_names, rate_names, park)
 
 def getRatesMatches():
     __rates_file = pd.ExcelFile(rates_root)
@@ -20,10 +30,27 @@ def getRatesMatches():
     return (rates_new, rates_old, matches)
 
 if __name__ == '__main__':
-    RN, RO, M = getRatesMatches()
+
+    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-06-12-2023-15_03.xlsx'
+    a_file = pd.ExcelFile(a_file_root)
+    df = GatherAllColumns(a_file)
+
+    df['RAIDEN'] = 0.85 * df['RAIDEN']
+    df.loc['IGAR_new', 'RAIDEN'] = (0.7/0.85) * df.loc['IGAR_new', 'RAIDEN'].to_numpy()
+    df.loc['IGAR_old', 'RAIDEN'] = (0.7/0.85) * df.loc['IGAR_old', 'RAIDEN'].to_numpy()
+
+    df['MIN'] = df.min(axis=1, numeric_only=True)
+    df['DELTA'] = df['RAIDEN'] - df['MIN']
+    df['DELTA %'] = round(100 * df['DELTA']/df['RAIDEN'], 2)
+
+    df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='1')
+    
+
+    # RN, RO, M = getRatesMatches()
     # print(M)
 
-    test_sipp = input('What car?\n')
+    """ test_sipp = input('What car?\n')
+    test_sipp = str.lower(test_sipp)
 
     N_or_O = lambda x: RN if x == 'new' else RO
     D = N_or_O(M.loc[test_sipp, 'park'])
@@ -34,4 +61,4 @@ if __name__ == '__main__':
             M.loc[test_sipp, 'inp_sipp']
         ]
 
-    print(s)
+    print(s) """

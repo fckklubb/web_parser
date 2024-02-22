@@ -45,31 +45,36 @@ async def getOneColumnRates_almak(res_list: List[CFR], pick_up: datetime.date, d
         if __response.status >= 400:
             return None
         soup = BeautifulSoup(await __response.text(), 'lxml')
-        TABLES = soup('table')
-        for i in range(21):
-            rows = TABLES[i]('tr')
-            for tr in rows:
-                if len(tr('th')) == 0:
-                    car = CFR("", "")
-                    car.different_millages = True
-                    car.company = "ALMAK PROKAT"
-                    if i < 7:
-                        car.millage = 200
-                    elif i < 14:
-                        car.millage = 300
-                    else:
-                        car.millage = 500
-                    car.url = tr.td.a.get('href')
-                    car.carType = getCarType(i)
-                    car.name = tr.td.a.string
-                    td = tr('td')
-                    car.setRate(1, float(td[1].string[:-5]))
-                    car.setRate(3, float(td[2].string[:-5]))
-                    car.setRate(7, float(td[3].string[:-5]))
-                    car.setRate(14, float(td[3].string[:-5]))
-                    car.setRate(21, float(td[4].string[:-5]))
-                    car.setRate(30, float(td[4].string[:-5]))
-                    res_list.append(car)
+        
+        DIVS = soup.find('div', class_='ttabscont').find_all('div', recursive=False)
+        
+        for DIV in DIVS:
+            i = DIVS.index(DIV)
+            if i == 0: mileage = 200
+            elif i == 1: mileage = 300
+            elif i == 2: mileage = 500
+            TABLES = DIV.find_all('table')
+            for t in TABLES:
+                car_group = t.find_previous_sibling().text
+                rows = t('tr')
+                for tr in rows:
+                    if len(tr('th')) == 0:
+                        car = CFR("", "")
+                        car.different_millages = True
+                        car.company = "ALMAK PROKAT"
+                        car.millage = mileage
+                        car.url = tr.td.a.get('href')
+                        car.carType = car_group
+                        car.name = tr.td.a.string
+                        td = tr('td')
+                        car.setRate(1, float(td[1].string[:-5]))
+                        car.setRate(3, float(td[2].string[:-5]))
+                        car.setRate(7, float(td[3].string[:-5]))
+                        car.setRate(14, float(td[3].string[:-5]))
+                        car.setRate(21, float(td[4].string[:-5]))
+                        car.setRate(30, float(td[4].string[:-5]))
+                        res_list.append(car)        
+        
         xtra = kwargs.get('xtra')
         if xtra == None: xtra=False
         if xtra:

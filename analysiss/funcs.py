@@ -32,7 +32,8 @@ def GatherAllColumns(excel_file: pd.ExcelFile):
     res_s: [pd.Series] = []
     s: pd.Series = pd.Series()
     for sheet in excel_file.sheet_names:
-        if (sheet != 'INFO') & ('ALMAK' not in sheet):
+        # if (sheet != 'INFO') & ('ALMAK' not in sheet):
+        if sheet != 'INFO':
             c_name = sheet # обрезаем дату парсинга из названия вкладки
             print(f'=====> Analyses {sheet}:')
             s = BuildOneColumn(c_name, GetXData(excel_file, sheet))
@@ -50,6 +51,11 @@ def FindMatchedCar(car_name: str) -> str:
     if car_name in M.index:
         if not pd.isna(M.loc[car_name, 'insp_sipp']):
             sipp = M.loc[car_name, 'insp_sipp'] + '_' + M.loc[car_name, 'park']
+    else:
+        pass
+        # тут нужно написать функцию для добавления
+        # car_name в matches
+        # AddCarToList(car_name)
     return sipp
 
 def GetTemplate_DF(T) -> pd.DataFrame:
@@ -78,7 +84,8 @@ def GetRData():
     return(M, RN, RO)
 
 def GetXData(excel_file: pd.ExcelFile, sheet: str) -> pd.DataFrame:
-    df = pd.read_excel(excel_file, sheet, index_col=0, skiprows=[0, 2, 3])
+    df = pd.read_excel(excel_file, sheet, index_col=0, skiprows=[0, 2, 3], nrows=6)
+    # nrows = 6 - for Almak OR diff mileage companies первые строки 6 штук - для пробена 200 в сутки :-)
     # print('This DataX was got..')
     # print(sheet)
     # print(df.head(3))
@@ -99,3 +106,6 @@ def RenamedSIPPs(car_names: [str], columns: [str], matches: pd.DataFrame):
 
 def GetMI(Trio) -> pd.MultiIndex:
     return pd.MultiIndex.from_product([[i+'_'+j for i in Trio.sipp_names for j in Trio.park], Trio.rate_names], names=['sipp', 'rate'])
+
+def AddCarToList():
+    pass

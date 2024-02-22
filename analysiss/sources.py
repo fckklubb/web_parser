@@ -1,7 +1,7 @@
 # folders & files
 data_folder = './outputs'
 rates_root = './rates.xlsx'
-matches_root = './matches_table.xls'
+matches_root = './matches_table_upd.xls'
 
 # consts
 rate_nums = [1, 3, 7, 14, 21, 30]

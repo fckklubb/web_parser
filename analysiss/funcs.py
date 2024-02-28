@@ -18,12 +18,12 @@ def BuildOneColumn(name: str, data: pd.DataFrame) -> pd.Series:
             # print('In the company: <', name, '> the SIPP code = <', sipp, '> stands for the car: ', x)
             if (sipp != 'nope') & (sipp in result.index.get_level_values('sipp')):
                 # print('+++++> Adding data: ', data[x].to_numpy(), 'for the car: ', x)
-                if result[sipp].isna().any():
-                    result[sipp] = data[x].to_numpy()
+                if result[[(sipp, f'{x}') for x in Trio.rate_names]].isna().any():
+                    result[[(sipp, f'{x}') for x in Trio.rate_names]] = data[x].to_numpy()
                 else:
-                    rr = result[sipp].reset_index(drop=True) > data[x].reset_index(drop=True)
+                    rr = result[[(sipp, f'{x}') for x in Trio.rate_names]].reset_index(drop=True) > data[x].reset_index(drop=True)
                     if rr.any(): # OR ALL ?!?!
-                        result[sipp] = data[x].to_numpy()
+                        result[[(sipp, f'{x}') for x in Trio.rate_names]] = data[x].to_numpy()
 
     return result
 
@@ -66,7 +66,7 @@ def GetTemplate_DF(T) -> pd.DataFrame:
     for s in T.sipp_names:
         for p in T.park:
             R = F(p)
-            df.loc[s+'_'+p,'RAIDEN'] = R[R[R.columns[0]]=='Lim'].loc[:, s].to_numpy()
+            df.loc[[(s+'_'+p, f'{x}') for x in T.rate_names],'RAIDEN'] = R[R[R.columns[0]]=='Lim'].loc[:, s].to_numpy()
 
     print('RAIDEN RES')
     print(df)
@@ -105,7 +105,9 @@ def RenamedSIPPs(car_names: [str], columns: [str], matches: pd.DataFrame):
     return dict(zip(columns, d))
 
 def GetMI(Trio) -> pd.MultiIndex:
-    return pd.MultiIndex.from_product([[i+'_'+j for i in Trio.sipp_names for j in Trio.park], Trio.rate_names], names=['sipp', 'rate'])
+    c = ['car_name']
+    c.extend(Trio.rate_names)
+    return pd.MultiIndex.from_product([[i+'_'+j for i in Trio.sipp_names for j in Trio.park], c], names=['sipp', 'rate'])
 
 def AddCarToList():
     pass

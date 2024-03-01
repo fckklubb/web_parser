@@ -9,6 +9,8 @@ from collections import namedtuple
 T = namedtuple('T', 'sipp_names rate_names park')
 Trio = T(sipp_names, rate_names, park)
 
+not_in_the_list = []
+
 def BuildOneColumn(name: str, data: pd.DataFrame) -> pd.Series:
     # print('We are in the BuildOneColumn func for: ', name)
     result = GetTemplate_S(name, Trio)
@@ -38,12 +40,13 @@ def GatherAllColumns(excel_file: pd.ExcelFile):
             c_name = sheet # обрезаем дату парсинга из названия вкладки
             print(f'=====> Analyses {sheet}:')
             s = BuildOneColumn(c_name, GetXData(excel_file, sheet))
-            print(s)
-            inp = input('Press ENTER to run next loop..')
+            # print(s)
             res_s.append(s)
         # print('Companies analysed: ', len(res_s))
         # print(res_s)
     df = pd.concat(res_s, axis=1)
+    print('Pls see not in the list cars:')
+    print(not_in_the_list)
     return pd.concat([result, df], axis=1)
 
 def FindMatchedCar(car_name: str) -> str:
@@ -57,6 +60,7 @@ def FindMatchedCar(car_name: str) -> str:
         # тут нужно написать функцию для добавления
         # car_name в matches
         # AddCarToList(car_name)
+        not_in_the_list.append(car_name)
     return sipp
 
 def GetTemplate_DF(T) -> pd.DataFrame:

@@ -15,18 +15,22 @@ Trio = T(sipp_names, rate_names, park)
 
 if __name__ == '__main__':
 
-    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-22-02-2024-19_32_30.xlsx'
+    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-01-03-2024-22_48_57.xlsx'
     a_file = pd.ExcelFile(a_file_root)
     df = GatherAllColumns(a_file)
 
-    df['RAIDEN'] = df['RAIDEN'].apply(lambda x: 0.85*x if not isinstance(x, str) else x)
-    df.loc['IGAR_new', 'RAIDEN'] = df.loc['IGAR_new', 'RAIDEN'].apply(lambda x: (0.7/0.85)*x if not isinstance(x, str) else x)
-    df.loc['IGAR_old', 'RAIDEN'] = df.loc['IGAR_old', 'RAIDEN'].apply(lambda x: (0.7/0.85)*x if not isinstance(x, str) else x)
-
-    df['MIN'] = df.min(axis=1, numeric_only=True)
-    df['DELTA'] = df['MIN']
-    df.loc[[(f'{i}_{j}', f'{k}') for i in sipp_names for j in park for k in rate_names], 'DELTA'] = df.loc[[(f'{i}_{j}', f'{k}') for i in sipp_names for j in park for k in rate_names], 'RAIDEN'] - df.loc[[(f'{i}_{j}', f'{k}') for i in sipp_names for j in park for k in rate_names], 'MIN']
-    # df['DELTA'] = df['RAIDEN'] - df['MIN']
-    # df['DELTA %'] = round(100 * df['DELTA']/df['RAIDEN'], 2)
-
+    sipp_list = [i+'_'+j for i in sipp_names for j in park]
+    for s in sipp_list:
+        k = 0.7 if 'IGAR' in s else 0.85
+        k = 1
+        df.loc[(s, rate_names), 'RAIDEN'] = k * df.loc[(s, rate_names), 'RAIDEN']
+        df.loc[(s, rate_names), 'MIN'] = df.loc[(s, rate_names), :].min(axis=1)
+        df.loc[(s, rate_names), 'DELTA'] = df.loc[(s, rate_names), 'RAIDEN'] - df.loc[(s, rate_names), 'MIN']
+        try:
+            df.loc[(s, rate_names), 'DELTA %'] = df.loc[(s, rate_names), 'DELTA']/df.loc[(s, rate_names), 'RAIDEN']
+            df.loc[(s, rate_names), 'DELTA %'] = 100 * df.loc[(s, rate_names), 'DELTA %'].to_numpy()
+            # round ?!?!?
+        except ZeroDivisionError:
+            pass
+    
     df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='1')

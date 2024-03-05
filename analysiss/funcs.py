@@ -2,12 +2,14 @@ import pandas as pd
 import numpy as np
 #from Levenshtein import ratio
 
-from sources import rate_names, rates_root, matches_root
+from sources import rate_names, rates_root, matches_root, data_folder
 from config import park, sipp_names
 
 from collections import namedtuple
 T = namedtuple('T', 'sipp_names rate_names park')
 Trio = T(sipp_names, rate_names, park)
+
+not_in_the_list = []
 
 def BuildOneColumn(name: str, data: pd.DataFrame) -> pd.Series:
     # print('We are in the BuildOneColumn func for: ', name)
@@ -18,13 +20,14 @@ def BuildOneColumn(name: str, data: pd.DataFrame) -> pd.Series:
             # print('In the company: <', name, '> the SIPP code = <', sipp, '> stands for the car: ', x)
             if (sipp != 'nope') & (sipp in result.index.get_level_values('sipp')):
                 # print('+++++> Adding data: ', data[x].to_numpy(), 'for the car: ', x)
-                if result[sipp].isna().any():
-                    result[sipp] = data[x].to_numpy()
+                if result[[(sipp, f'{x}') for x in Trio.rate_names]].isna().any():
+                    result[[(sipp, f'{x}') for x in Trio.rate_names]] = data[x].to_numpy()
+                    result[(sipp, 'car_name')] = x
                 else:
-                    rr = result[sipp].reset_index(drop=True) > data[x].reset_index(drop=True)
+                    rr = result[[(sipp, f'{x}') for x in Trio.rate_names]].reset_index(drop=True) > data[x].reset_index(drop=True)
                     if rr.any(): # OR ALL ?!?!
-                        result[sipp] = data[x].to_numpy()
-
+                        result[[(sipp, f'{x}') for x in Trio.rate_names]] = data[x].to_numpy()
+                        result[(sipp, 'car_name')] = x
     return result
 
 def GatherAllColumns(excel_file: pd.ExcelFile):
@@ -37,12 +40,21 @@ def GatherAllColumns(excel_file: pd.ExcelFile):
             c_name = sheet # обрезаем дату парсинга из названия вкладки
             print(f'=====> Analyses {sheet}:')
             s = BuildOneColumn(c_name, GetXData(excel_file, sheet))
-            print(s)
-            inp = input('Press ENTER to run next loop..')
+            # print(s)
             res_s.append(s)
         # print('Companies analysed: ', len(res_s))
         # print(res_s)
     df = pd.concat(res_s, axis=1)
+    print('Pls see not in the list cars:')
+    print(not_in_the_list)
+
+    not_in_the_list_df = pd.DataFrame(columns=['company_name', 'inspire_name', 'insp_sipp', 'park'])
+    not_in_the_list_df['company_name'] = not_in_the_list
+    print('What we\'re going to add to the list')
+    print(not_in_the_list_df)
+    # not_in_the_list_df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='not in the list cars')
+    not_in_the_list_df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='not in the list cars')
+
     return pd.concat([result, df], axis=1)
 
 def FindMatchedCar(car_name: str) -> str:
@@ -56,20 +68,25 @@ def FindMatchedCar(car_name: str) -> str:
         # тут нужно написать функцию для добавления
         # car_name в matches
         # AddCarToList(car_name)
+        not_in_the_list.append(car_name)
     return sipp
 
 def GetTemplate_DF(T) -> pd.DataFrame:
     mi = GetMI(T)
     _, RN, RO = GetRData()
-    F = lambda x: RN if x == 'new' else RO
+    F1 = lambda x: RN if x == 'new' else RO
+    fleet_new, fleet_old = GetRFleet()
+    F2 = lambda x: fleet_new if x == 'new' else fleet_old
     df = pd.DataFrame(index=mi)
     for s in T.sipp_names:
         for p in T.park:
-            R = F(p)
-            df.loc[s+'_'+p,'RAIDEN'] = R[R[R.columns[0]]=='Lim'].loc[:, s].to_numpy()
+            R = F1(p)
+            df.loc[[(s+'_'+p, f'{x}') for x in T.rate_names],'RAIDEN'] = R[R[R.columns[0]]=='Lim'].loc[:, s].to_numpy()
+            F = F2(p)
+            df.loc[(s+'_'+p, 'car_name'), 'RAIDEN'] = F.at[0, s]
 
-    print('RAIDEN RES')
-    print(df)
+    # print('RAIDEN RES')
+    # print(df)
 
     return df
 
@@ -82,6 +99,20 @@ def GetRData():
     RN = pd.read_excel(rates_root, "new", index_col=0, usecols=[0,1]+list(range(2, 18)), skiprows=lambda x: x not in [3]+list(range(6, 12))+list(range(17, 23)))
     RO = pd.read_excel(rates_root, "old", index_col=0, usecols=[0,1]+list(range(2, 18)), skiprows=lambda x: x not in [3]+list(range(6, 12))+list(range(17, 23)))
     return(M, RN, RO)
+
+def GetRFleet():
+    fleet_new_ = pd.read_excel(rates_root, "new", header=None, usecols=list(range(2, 18)), skiprows= lambda x: x not in [0])
+    sipps_new_ = pd.read_excel(rates_root, "new", header=None, usecols=list(range(2, 18)), skiprows= lambda x: x not in [3])
+    fleet_old_ = pd.read_excel(rates_root, "old", header=None, usecols=list(range(2, 18)), skiprows= lambda x: x not in [0])
+    sipps_old_ = pd.read_excel(rates_root, "old", header=None, usecols=list(range(2, 18)), skiprows= lambda x: x not in [3])
+    
+    d = dict(zip(fleet_new_.columns.to_numpy().tolist(), sipps_new_.loc[0].to_numpy().tolist()))
+    fleet_new_ = fleet_new_.rename(columns=d)
+
+    d = dict(zip(fleet_old_.columns.to_numpy().tolist(), sipps_old_.loc[0].to_numpy().tolist()))
+    fleet_old_ = fleet_old_.rename(columns=d)
+    
+    return (fleet_new_, fleet_old_)
 
 def GetXData(excel_file: pd.ExcelFile, sheet: str) -> pd.DataFrame:
     df = pd.read_excel(excel_file, sheet, index_col=0, skiprows=[0, 2, 3], nrows=6)
@@ -105,7 +136,9 @@ def RenamedSIPPs(car_names: [str], columns: [str], matches: pd.DataFrame):
     return dict(zip(columns, d))
 
 def GetMI(Trio) -> pd.MultiIndex:
-    return pd.MultiIndex.from_product([[i+'_'+j for i in Trio.sipp_names for j in Trio.park], Trio.rate_names], names=['sipp', 'rate'])
+    c = ['car_name']
+    c.extend(Trio.rate_names)
+    return pd.MultiIndex.from_product([[i+'_'+j for i in Trio.sipp_names for j in Trio.park], c], names=['sipp', 'rate'])
 
 def AddCarToList():
     pass

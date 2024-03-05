@@ -41,40 +41,40 @@ async def main():
             # Rent Motors
             print("1. Rent Motors..")
             ws.cell(8, 1).value = "RENT MOTORS"
-            res_list = await getAllRates(pick_up, s, rent_motors_func, location=10)
-            wb = AddRates("RENT-MOTORS", wb, res_list)
+            res_list1 = await getAllRates(pick_up, s, rent_motors_func, location=10)
+            wb = AddRates("RENT-MOTORS", wb, res_list1)
             if wb == None:
                 print("Panic.. Rent Motors failed..")
 
             # Rex Rent
             print("2. Rex Rent..")
             ws.cell(9, 1).value = "REX RENT"
-            res_list = await getAllRates(pick_up, s, rex_rent_func)
-            wb = AddRates("REX-RENT", wb, res_list)
+            res_list2 = await getAllRates(pick_up, s, rex_rent_func)
+            wb = AddRates("REX-RENT", wb, res_list2)
             if wb == None:
                 print("Panic.. Rex Rent failed..")
 
             # A Arenda
             print("3. A Arenda..")
             ws.cell(10, 1).value = "A ARENDA"
-            res_list = await getAllRates(pick_up, s, a_arenda_func)
-            wb = AddRates("A-ARENDA", wb, res_list)
+            res_list3 = await getAllRates(pick_up, s, a_arenda_func)
+            wb = AddRates("A-ARENDA", wb, res_list3)
             if wb == None:
                 print("Panic.. A Arenda failed..")
 
             # Almak
             print("4. Almak..")
             ws.cell(11, 1).value = "ALMAK"
-            res_list = await getAllRates(pick_up, s, almak_func, loop=False, xtra=False)
-            wb = AddRates("ALMAK", wb, res_list)
+            res_list4 = await getAllRates(pick_up, s, almak_func, loop=False, xtra=False)
+            wb = AddRates("ALMAK", wb, res_list4)
             if wb == None:
                 print("Panic.. Almak failed..")
 
             # Storlet
             print("5. Storlet..")
             ws.cell(12, 1).value = "STORLET"
-            res_list = await getAllRates(pick_up, s, storlet_func)
-            wb = AddRates("STORLET", wb, res_list)
+            res_list5 = await getAllRates(pick_up, s, storlet_func)
+            wb = AddRates("STORLET", wb, res_list5)
 
 
             print("All done..")

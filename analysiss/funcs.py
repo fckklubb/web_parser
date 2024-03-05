@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 #from Levenshtein import ratio
 
-from sources import rate_names, rates_root, matches_root
+from sources import rate_names, rates_root, matches_root, data_folder
 from config import park, sipp_names
 
 from collections import namedtuple
@@ -47,6 +47,14 @@ def GatherAllColumns(excel_file: pd.ExcelFile):
     df = pd.concat(res_s, axis=1)
     print('Pls see not in the list cars:')
     print(not_in_the_list)
+
+    not_in_the_list_df = pd.DataFrame(columns=['company_name', 'inspire_name', 'insp_sipp', 'park'])
+    not_in_the_list_df['company_name'] = not_in_the_list
+    print('What we\'re going to add to the list')
+    print(not_in_the_list_df)
+    # not_in_the_list_df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='not in the list cars')
+    not_in_the_list_df.to_excel(data_folder+'/'+'analysiss.xlsx', sheet_name='not in the list cars')
+
     return pd.concat([result, df], axis=1)
 
 def FindMatchedCar(car_name: str) -> str:
@@ -77,8 +85,8 @@ def GetTemplate_DF(T) -> pd.DataFrame:
             F = F2(p)
             df.loc[(s+'_'+p, 'car_name'), 'RAIDEN'] = F.at[0, s]
 
-    print('RAIDEN RES')
-    print(df)
+    # print('RAIDEN RES')
+    # print(df)
 
     return df
 

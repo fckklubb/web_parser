@@ -16,7 +16,7 @@ Trio = T(sipp_names, rate_names, park)
 
 if __name__ == '__main__':
 
-    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-05-03-2024-18_47_05.xlsx'
+    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-08-05-2024-17_55_15.xlsx'
     a_file = pd.ExcelFile(a_file_root)
     df = GatherAllColumns(a_file)
 
@@ -25,12 +25,22 @@ if __name__ == '__main__':
         # SET DISCOUNTS (are active till 17.03.2024)
         # k = 0.7 if 'IGAR' in s else 0.85
         # k = 1
-        k = 0.85
-        if 'IGAR' in s: k = 0.5 # discount = 50%
-        if 'HDAR' in s: k = 0.6 # discount = 40%
-        arr = ['EDAR','EGAR','HGAR','XFAR']
-        arr2 = [el in s for el in arr]
-        if np.any(arr2): k = 0.8 # discount = 20%
+        k = 1.0
+        """ if 'EDMR' in s: k = 0.9 # discount = 10%
+        if 'EDAR' in s: k = 0.9 # discount = 10%
+        if 'HDAR' in s: k = 0.85 # discount = 15%
+        if 'CWMR' in s: k = 0.85 # discount = 15%
+        if 'CDAR' in s: k = 0.9 # discount = 10%
+        if 'EGAR' in s: k = 0.9 # discount = 10%
+        if 'HGAR' in s: k = 0.9 # discount = 10%
+        if 'IGAR' in s: k = 0.6 # discount = 40%
+        if 'SDAR' in s: k = 0.85 # discount = 15%
+        if 'XFAR' in s: k = 0.9 # discount = 10% """
+        
+
+        # arr = ['EDAR','EGAR','HGAR','XFAR']
+        # arr2 = [el in s for el in arr]
+        # if np.any(arr2): k = 0.8 # discount = 20%
 
         df.loc[(s, rate_names), 'RAIDEN'] = k * df.loc[(s, rate_names), 'RAIDEN']
         df.loc[(s, rate_names), 'MIN'] = df.loc[(s, rate_names), :].min(axis=1)

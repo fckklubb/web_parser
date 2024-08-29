@@ -14,6 +14,8 @@ def formatDate(date: datetime.date, type: int) -> str:
         return date.strftime("%Y-%m-%d")
     elif type == 3:
         return date.strftime("%d.%m.%Y")
+    elif type == 4: #EconomyBooking
+        date.strftime("%Y%m%d")
     return ""
 
 def formatTime() -> str:

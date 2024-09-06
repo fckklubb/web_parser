@@ -32,7 +32,7 @@ def BuildOneColumn(name: str, data: pd.DataFrame) -> pd.Series:
 
 def GatherAllColumns(excel_file: pd.ExcelFile):
     result = GetTemplate_DF(Trio)
-    res_s: [pd.Series] = []
+    res_s: list[pd.Series] = []
     s: pd.Series = pd.Series()
     for sheet in excel_file.sheet_names:
         # if (sheet != 'INFO') & ('ALMAK' not in sheet):
@@ -122,7 +122,7 @@ def GetXData(excel_file: pd.ExcelFile, sheet: str) -> pd.DataFrame:
     # print(df.head(3))
     return df
 
-def RenamedSIPPs(car_names: [str], columns: [str], matches: pd.DataFrame):
+def RenamedSIPPs(car_names: list[str], columns: list[str], matches: pd.DataFrame):
     # finds new Raiden SIPPs for company SIPPs and returns a dict for renaming
     # car_names - car names
     # columns - list of column names to be replaced

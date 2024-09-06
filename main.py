@@ -63,12 +63,12 @@ async def main():
                 print("Panic.. A Arenda failed..")
 
             # Almak
-            print("4. Almak..")
-            ws.cell(11, 1).value = "ALMAK"
-            res_list4 = await getAllRates(pick_up, s, almak_func, loop=False, xtra=False)
-            wb = AddRates("ALMAK", wb, res_list4)
-            if wb == None:
-                print("Panic.. Almak failed..")
+            # print("4. Almak..")
+            # ws.cell(11, 1).value = "ALMAK"
+            # res_list4 = await getAllRates(pick_up, s, almak_func, loop=False, xtra=False)
+            # wb = AddRates("ALMAK", wb, res_list4)
+            # if wb == None:
+            #     print("Panic.. Almak failed..")
 
             # Storlet
             print("5. Storlet..")

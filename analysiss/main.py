@@ -16,7 +16,7 @@ Trio = T(sipp_names, rate_names, park)
 
 if __name__ == '__main__':
 
-    a_file_root = '/Users/fckklubb/Documents/Python/web_parser/outputs/Competitors-rates-08-05-2024-17_55_15.xlsx'
+    a_file_root = './outputs/Competitors-rates-06-09-2024-14_40_06.xlsx'
     a_file = pd.ExcelFile(a_file_root)
     df = GatherAllColumns(a_file)
 
